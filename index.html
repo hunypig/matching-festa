@@ -287,7 +287,7 @@
 
 <script>
   // ✅ Apps Script 웹앱 URL
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3x1IkMoZ-XUS79gDFyyOSQkK9sTm7oGnfoNYMz2J2QnthGiCbDYnPygZRIISBygvoyA/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyOOAgTFcJtwFky87lqv7p8Gtvvu85d5LgkTrwoQb42T3QTfAKInXH9RKX_jgP2oEte1w/exec';
 
   // 서명 캔버스 초기화
   const canvas = document.getElementById('sig-canvas');
@@ -378,19 +378,19 @@
     btn.textContent = '제출 중...';
 
     try {
-      const payload = {
-        timestamp: new Date().toLocaleString('ko-KR'),
-        name, bank, account,
-        phone: "'" + phone,   // 구글 시트에서 텍스트로 인식되도록 앞에 ' 추가
-        sigData,
-        consent: '동의'
-      };
+      const form = new FormData();
+      form.append('timestamp', new Date().toLocaleString('ko-KR'));
+      form.append('name',    name);
+      form.append('bank',    bank);
+      form.append('account', account);
+      form.append('phone',   phone);
+      form.append('sigData', sigData);
+      form.append('consent', '동의');
 
       await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: form
       });
 
       showToast('✓ 신청서가 성공적으로 제출되었습니다!', 4000);
