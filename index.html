@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>매칭페스타 면접지원금 신청서</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f4f5f7;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+      color: #111;
+    }
+
+    .form-wrap {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e2e4e8;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .form-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .form-header p { font-size: 13px; color: #6b7280; }
+
+    .section {
+      background: #fff;
+      border: 1px solid #e2e4e8;
+      border-radius: 12px;
+      padding: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .req { color: #ef4444; margin-left: 2px; }
+
+    .field input[type="text"],
+    .field input[type="tel"],
+    .field select {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 14px;
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      color: #111;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+      background: #fff;
+    }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .sig-container {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 160px;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .sig-hint {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 13px;
+      color: #9ca3af;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .sig-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+    .btn-clear {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 12px;
+      color: #6b7280;
+      background: none;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 4px 14px;
+      cursor: pointer;
+      height: 30px;
+    }
+    .btn-clear:hover { background: #f3f4f6; }
+
+    .consent-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.8;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+
+    .consent-check { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .consent-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: #1a56db; flex-shrink: 0; cursor: pointer; }
+    .consent-check span { font-size: 13px; font-weight: 500; color: #374151; }
+
+    .submit-btn {
+      width: 100%;
+      height: 50px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: #1a56db;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .submit-btn:hover { background: #1648c0; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    .toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111;
+      color: #fff;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 13px;
+      padding: 11px 22px;
+      border-radius: 999px;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 9999;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    @media (max-width: 480px) {
+      .row2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-wrap">
+  <div class="form-header">
+    <div class="badge">공식 신청서</div>
+    <h1>매칭페스타 면접지원금 신청서</h1>
+    <p>아래 항목을 모두 입력 후 제출해 주세요</p>
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="section">
+    <div class="section-title">기본 정보</div>
+
+    <div class="field">
+      <label>이름 <span class="req">*</span></label>
+      <input type="text" id="f-name" placeholder="홍길동" />
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>은행명 <span class="req">*</span></label>
+        <select id="f-bank">
+          <option value="">은행 선택</option>
+          <option>국민은행</option>
+          <option>신한은행</option>
+          <option>우리은행</option>
+          <option>하나은행</option>
+          <option>농협은행</option>
+          <option>기업은행</option>
+          <option>카카오뱅크</option>
+          <option>토스뱅크</option>
+          <option>케이뱅크</option>
+          <option>씨티은행</option>
+          <option>SC제일은행</option>
+          <option>새마을금고</option>
+          <option>수협은행</option>
+          <option>신협</option>
+          <option>우체국</option>
+          <option>기타</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>계좌번호 <span class="req">*</span></label>
+        <input type="text" id="f-account" placeholder="- 없이 숫자만 입력" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>전화번호 <span class="req">*</span></label>
+      <input type="text" id="f-phone" placeholder="010-0000-0000" maxlength="13" inputmode="numeric" oninput="formatPhone(this)" />
+    </div>
+  </div>
+
+  <!-- 서명 -->
+  <div class="section">
+    <div class="section-title">개인 서명</div>
+    <div class="sig-container">
+      <canvas id="sig-canvas"></canvas>
+      <span class="sig-hint" id="sig-hint">이 곳에 서명해 주세요</span>
+    </div>
+    <div class="sig-actions">
+      <button class="btn-clear" onclick="clearSig()">서명 지우기</button>
+    </div>
+  </div>
+
+  <!-- 개인정보 동의 -->
+  <div class="section">
+    <div class="section-title">개인정보 동의</div>
+    <div class="consent-box">
+      <strong>개인정보 수집 및 이용 동의</strong><br><br>
+      수집 항목: 이름, 은행명, 계좌번호, 전화번호, 서명<br>
+      수집 목적: 신청서 접수 및 본인 확인<br>
+      보유 기간: 신청 처리 완료 후 3년<br><br>
+      귀하는 위 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다.
+      다만, 동의를 거부하실 경우 서비스 신청이 제한될 수 있습니다.
+    </div>
+    <label class="consent-check">
+      <input type="checkbox" id="f-consent" />
+      <span>개인정보 수집 및 이용에 동의합니다 <span class="req">*</span></span>
+    </label>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitForm()">신청서 제출</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ✅ Apps Script 웹앱 URL
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnQSSt1stfGPSEtnKnYsqS3N9dCbqnah87rNTVD7RUW4r53YXZItcKteRk7zTxk9iWHQ/exec';
+
+  // 서명 캔버스 초기화
+  const canvas = document.getElementById('sig-canvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false, hasSig = false;
+
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+
+  window.addEventListener('load', resizeCanvas);
+  window.addEventListener('resize', resizeCanvas);
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mousemove', e => {
+    if (!drawing) return;
+    const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    hasSig = true; document.getElementById('sig-hint').style.opacity = 0;
+  });
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault(); if (!drawing) return;
+    const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    hasSig = true; document.getElementById('sig-hint').style.opacity = 0;
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => drawing = false);
+
+  function clearSig() {
+    const rect = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    hasSig = false;
+    document.getElementById('sig-hint').style.opacity = 1;
+  }
+
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  // 전화번호 자동 하이픈 포맷 (000-0000-0000)
+  function formatPhone(input) {
+    let v = input.value.replace(/\D/g, ''); // 숫자만 추출
+    if (v.length <= 3) {
+      input.value = v;
+    } else if (v.length <= 7) {
+      input.value = v.slice(0, 3) + '-' + v.slice(3);
+    } else {
+      input.value = v.slice(0, 3) + '-' + v.slice(3, 7) + '-' + v.slice(7, 11);
+    }
+  }
+
+  async function submitForm() {
+    const name    = document.getElementById('f-name').value.trim();
+    const bank    = document.getElementById('f-bank').value;
+    const account = document.getElementById('f-account').value.trim();
+    const phone   = document.getElementById('f-phone').value.trim();
+    const consent = document.getElementById('f-consent').checked;
+
+    if (!name)    { showToast('이름을 입력해 주세요.'); return; }
+    if (!bank)    { showToast('은행명을 선택해 주세요.'); return; }
+    if (!account) { showToast('계좌번호를 입력해 주세요.'); return; }
+    if (!phone)   { showToast('전화번호를 입력해 주세요.'); return; }
+    if (phone.replace(/\D/g,'').length < 10) { showToast('전화번호를 정확히 입력해 주세요.'); return; }
+    if (!hasSig)  { showToast('서명을 해주세요.'); return; }
+    if (!consent) { showToast('개인정보 수집 이용에 동의해 주세요.'); return; }
+
+    const sigData = canvas.toDataURL('image/png');
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = '제출 중...';
+
+    try {
+      const payload = {
+        timestamp: new Date().toLocaleString('ko-KR'),
+        name, bank, account,
+        phone: "'" + phone,   // 구글 시트에서 텍스트로 인식되도록 앞에 ' 추가
+        sigData,
+        consent: '동의'
+      };
+
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      showToast('✓ 신청서가 성공적으로 제출되었습니다!', 4000);
+      btn.textContent = '제출 완료 ✓';
+      btn.style.background = '#16a34a';
+
+    } catch (err) {
+      showToast('오류가 발생했습니다: ' + err.message, 4000);
+      btn.disabled = false;
+      btn.textContent = '신청서 제출';
+    }
+  }
+</script>
+
+</body>
+</html>
